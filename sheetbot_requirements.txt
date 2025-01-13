@@ -1,0 +1,10 @@
+numpy
+pandas
+pycryptodome
+python-dotenv
+python-Levenshtein-wheels
+requests
+datetime
+gspread
+time
+pytz
