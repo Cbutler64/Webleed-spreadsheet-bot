@@ -1,0 +1,6 @@
+/.env
+/test/
+/.bot.py.swp
+/__pycache__
+/*.json
+/.DS_Store
