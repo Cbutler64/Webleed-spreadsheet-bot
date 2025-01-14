@@ -69,7 +69,6 @@ def update_spreadsheet(leaderboard):
 def refresh_leaderboard(track_id):
   #grab leaderboard, check for changes, run update speadsheet if there are changes
   leaderboard = get_leaderboard(track_id)
-  leaderboard.to_csv("leaderboard.csv", index=False)
   if not os.path.exists("leaderboard.csv"):
     leaderboard.to_csv("leaderboard.csv", index=False)
     update_spreadsheet(leaderboard)
