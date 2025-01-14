@@ -33,8 +33,8 @@ def update_spreadsheet(leaderboard):
   worksheet = sh.worksheet("Track " + str(current_track) )
   worksheet.update([leaderboard.columns.values.tolist()] + leaderboard.values.tolist(), 'A2:F200')
   #columns for teams are hardcoded - may need to change if spreadsheet format changes
-  trialColumns = ["I","L","O","R","U","X","AA"];
-  scoreColumns = ["J","M","P","S","V","Y","AB"];
+  trial_columns = ["I","L","O","R","U","X","AA"];
+  score_columns = ["J","M","P","S","V","Y","AB"];
   team_dfs = {}
   worksheet = sh.worksheet("Track " + str(current_track)) 
   name_lookup = sh.worksheet("Team IDs (For automation)")
@@ -61,7 +61,7 @@ def update_spreadsheet(leaderboard):
   #Drop unused columns and inject data into spreadsheet
   for idx, (team_name, team_df) in enumerate(team_dfs.items()):
       team_df = team_df.drop(columns=['Position', 'Model ID', "Country", "Userid", "Player Name_x"])
-      range = trialColumns[idx]+"3" + ":" + scoreColumns[idx] + "10"
+      range = trial_columns[idx]+"3" + ":" + score_columns[idx] + "10"
       team_df = team_df[["Player Name_y", "Lap Time"]]
       worksheet.update(team_df.values.tolist(), range)
 

@@ -51,7 +51,7 @@ def velo_api(url,data):
 # @output: leaderboard results in pandas dataframe
 def get_leaderboard(track_id):
   #Models may need to be updates on newer versions of Velocidrone
-  validModels = [48, 52, 53, 54, 56, 57, 62, 112, 113, 116, 119, 120, 121]
+  valid_models = [48, 52, 53, 54, 56, 57, 62, 112, 113, 116, 119, 120, 121]
   print("Grabbing data from track " + track_id)
   payload = "track_id="+track_id+"&sim_version=1.16&offset=0&count=200&protected_track_value=1&race_mode=6".format(track_id)
   url = 'https://velocidrone.co.uk/api/leaderboard/getLeaderBoard'
@@ -61,7 +61,7 @@ def get_leaderboard(track_id):
     quit(1)
   final_df = pd.json_normalize(final, record_path =['tracktimes'])
   final_df['lap_time'] = pd.to_numeric(final_df['lap_time'])
-  final_df = final_df[final_df['model_id'].isin(validModels)]
+  final_df = final_df[final_df['model_id'].isin(valid_models)]
   final_df.reset_index(drop=True, inplace=True)
   final_df.index += 1
   final_df['position'] = final_df.index
