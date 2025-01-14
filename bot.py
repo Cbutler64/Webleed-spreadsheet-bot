@@ -5,7 +5,7 @@ import gspread
 from datetime import datetime
 import time 
 from pytz import timezone
-
+import os
 
 #Global variables
 season_teams={
@@ -25,12 +25,12 @@ current_track = 2
 track_id = '1696'
 sheet_cutoff = "2025-01-26 00:00:00"
 
-def refresh_leaderboard(track_id):
+
+def update_spreadsheet(leaderboard):
+  #dump leaderboard to sheet
   gc = gspread.oauth()
   sh = gc.open_by_key(sheet_id)
   worksheet = sh.worksheet("Track " + str(current_track) )
-  #dump leaderboard to sheet
-  leaderboard = get_leaderboard(track_id)
   worksheet.update([leaderboard.columns.values.tolist()] + leaderboard.values.tolist(), 'A2:F200')
   #columns for teams are hardcoded - may need to change if spreadsheet format changes
   trialColumns = ["I","L","O","R","U","X","AA"];
@@ -66,6 +66,23 @@ def refresh_leaderboard(track_id):
       worksheet.update(team_df.values.tolist(), range)
 
 
+def refresh_leaderboard(track_id):
+  #grab leaderboard, check for changes, run update speadsheet if there are changes
+  leaderboard = get_leaderboard(track_id)
+  leaderboard.to_csv("leaderboard.csv", index=False)
+  if not os.path.exists("leaderboard.csv"):
+    leaderboard.to_csv("leaderboard.csv", index=False)
+    update_spreadsheet(leaderboard)
+  else:
+    old_leaderboard = pd.read_csv("leaderboard.csv")
+    old_leaderboard.index += 1
+    if not old_leaderboard.compare(leaderboard).empty:
+      print("Leaderboard changed detected sending data...")
+      update_spreadsheet(leaderboard)
+      print("Sent!")
+    else:
+      print("No leaderboard changes detected.")
+
 def check_sheet_cutoff(target_date_str, target_format: str = "%Y-%m-%d %H:%M:%S"):
     # Parse the target date into EST timezone
     est = timezone("US/Eastern")
@@ -81,5 +98,4 @@ def check_sheet_cutoff(target_date_str, target_format: str = "%Y-%m-%d %H:%M:%S"
 while(check_sheet_cutoff(sheet_cutoff)): 
     print('Loading...') 
     refresh_leaderboard(track_id)
-    print("Sent!")
     time.sleep(300)
