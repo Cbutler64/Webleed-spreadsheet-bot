@@ -78,6 +78,7 @@ def refresh_leaderboard(track_id):
     if not old_leaderboard.compare(leaderboard).empty:
       print("Leaderboard changed detected sending data...")
       update_spreadsheet(leaderboard)
+      leaderboard.to_csv("leaderboard.csv", index=False)
       print("Sent!")
     else:
       print("No leaderboard changes detected.")
