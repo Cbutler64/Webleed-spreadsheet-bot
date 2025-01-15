@@ -72,11 +72,12 @@ def refresh_leaderboard(track_id):
   if not os.path.exists("leaderboard.csv"):
     leaderboard.to_csv("leaderboard.csv", index=False)
     update_spreadsheet(leaderboard)
+    print("Sent!")
   else:
     old_leaderboard = pd.read_csv("leaderboard.csv")
     old_leaderboard.index += 1
-    if not old_leaderboard.compare(leaderboard).empty:
-      print("Leaderboard changed detected sending data...")
+    if len(leaderboard.index) > len(old_leaderboard.index) or not old_leaderboard.compare(leaderboard).empty:
+      print("Leaderboard changes detected, sending data...")
       update_spreadsheet(leaderboard)
       leaderboard.to_csv("leaderboard.csv", index=False)
       print("Sent!")
