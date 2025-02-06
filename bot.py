@@ -21,9 +21,9 @@ sheet_id = "1YpQ3DsRvVJblOb4ISRs3ofQ93W9yVnv9k-66wgL1Zqo"
 
 
 #Weekly variables
-current_track = 2
-track_id = '1696'
-sheet_cutoff = "2025-01-26 00:00:00"
+current_track = 4
+track_id = '1716'
+sheet_cutoff = "2025-02-09 00:00:00"
 
 
 def update_spreadsheet(leaderboard):
@@ -71,16 +71,23 @@ def refresh_leaderboard(track_id):
   leaderboard = get_leaderboard(track_id)
   if not os.path.exists("leaderboard.csv"):
     leaderboard.to_csv("leaderboard.csv", index=False)
-    update_spreadsheet(leaderboard)
-    print("Sent!")
+    try:
+      update_spreadsheet(leaderboard)
+      print("Sent!")
+    except:
+      print("Sheet Update Failed!")
   else:
     old_leaderboard = pd.read_csv("leaderboard.csv")
     old_leaderboard.index += 1
     if len(leaderboard.index) > len(old_leaderboard.index) or not old_leaderboard.compare(leaderboard).empty:
       print("Leaderboard changes detected, sending data...")
       update_spreadsheet(leaderboard)
-      leaderboard.to_csv("leaderboard.csv", index=False)
-      print("Sent!")
+      try:
+        update_spreadsheet(leaderboard)
+        leaderboard.to_csv("leaderboard.csv", index=False)
+        print("Sent!")
+      except:
+        print("Sheet Update Failed!")
     else:
       print("No leaderboard changes detected.")
 
